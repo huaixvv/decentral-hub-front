@@ -77,6 +77,8 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
       - name: Static HTML export with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build && ls
+      - name: Move static files to correct path  # Modification: Added new step
+        run: mv ./out/_next ./out/decentral-hub-front/_next  # Modification: Moved _next folder to correct path
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
