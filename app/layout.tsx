@@ -6,6 +6,7 @@ import {WagmiProvider} from "wagmi";
 import {config} from "@/config/wagmi.config";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import "./layout.css";
+import {GithubOutlined} from "@ant-design/icons";
 
 // const inter = Inter({ subsets: ["latin"] });
 const queryClient = new QueryClient()
@@ -21,7 +22,15 @@ export default function RootLayout({
     <div className={"flex h-screen w-screen"}>
       <div className="w-1/4 p-4 menu-border bg-gray-100">
         <div className={"flex justify-center"}>
-          <div className={"text-2xl font-bold mt-6 ml-4"}>Decentral Hub</div>
+          <div className={"text-2xl font-bold mt-6 ml-4"}>
+            <a
+              target="blank"
+              className={"hover:text-blue-700 underline"}
+              href="https://github.com/huaixvv/decentral-hub">
+              Decentral Hub <GithubOutlined />
+            </a>
+          </div>
+
         </div>
         <Menus></Menus>
       </div>

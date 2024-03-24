@@ -17,35 +17,12 @@ export const ganache = {
 
 export const config = createConfig({
   chains: [goerli, sepolia, ganache],
+  // @ts-ignore
   transports: {
     // [mainnet.id]: http(),
-    // [sepolia.id]: http(),
-    [sepolia.id]: http()
+    [sepolia.id]: http(),
+    // [sepolia.id]: http()
     // [goerli.id]:http()
-    ,
-    1337: function (params: {
-      chain?: Chain | undefined;
-      pollingInterval?: number | undefined;
-      retryCount?: number | undefined;
-      timeout?: number | undefined;
-    } & { connectors?: StoreApi<Connector[]> | undefined; }): {
-      config: TransportConfig<string, EIP1193RequestFn>;
-      request: EIP1193RequestFn;
-      value?: Record<string, any> | undefined;
-    } {
-      throw new Error('Function not implemented.');
-    },
-    5: function (params: {
-      chain?: Chain | undefined;
-      pollingInterval?: number | undefined;
-      retryCount?: number | undefined;
-      timeout?: number | undefined;
-    } & { connectors?: StoreApi<Connector[]> | undefined; }): {
-      config: TransportConfig<string, EIP1193RequestFn>;
-      request: EIP1193RequestFn;
-      value?: Record<string, any> | undefined;
-    } {
-      throw new Error('Function not implemented.');
-    }
+
   },
 })

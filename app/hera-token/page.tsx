@@ -114,7 +114,11 @@ const ContractInfo = () => {
     <div>
       <div className={"text-lg mt-4 title-2"}>Hera Token</div>
       <div className={"mt-4"}>
-        <span><strong>Contract Address</strong>: <a target="_blank" className={"hover:text-blue-500"} href="https://sepolia.etherscan.io/address/0x459123B215057579938b1477DC7E3AC4149FaC48">{"0x459123B215057579938b1477DC7E3AC4149FaC48"}</a></span>
+        <span>
+          <strong>Contract Address</strong>:
+          <a target="_blank" className={"hover:text-blue-500"}
+             href="https://sepolia.etherscan.io/address/0x757Dbc93206d1871F807c6eD4dE5BB7191230ae1"> {"0x757Dbc93206d1871F807c6eD4dE5BB7191230ae1"}</a>
+        </span>
       </div>
       <div className={"mt-2"}>
         <span><strong>Name</strong>: {String(name?.result)}</span>
@@ -124,6 +128,14 @@ const ContractInfo = () => {
         <span><strong>Decimal</strong>: {String(decimals?.result)}</span>
         {/* @ts-ignore*/}
         <span className={"ml-10"}><strong>Supply Total</strong>: {ethers.formatEther(totalSupply?.result || 0)}</span>
+      </div>
+      <div className={"mt-2"}>
+        <div
+          className={"hover:text-blue-500 italic cursor-pointer"}>
+          Deployed at sepolia testnet,
+          <a
+            href="https://www.alchemy.com/faucets/ethereum-sepolia"> Faucet Link</a>
+        </div>
       </div>
     </div>
   )
@@ -137,8 +149,8 @@ const GeBalance = () => {
 
   const getBalance = async () => {
 
-    if (!address)  {
-      return
+    if (!address) {
+      return;
     }
     const data = await readContract(config, {
       ...contract,
