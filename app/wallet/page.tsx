@@ -1,22 +1,52 @@
 "use client"
 
-import useWallet from "@/app/wallet/useWallet";
 import {useState} from "react";
 import {message, Popconfirm, Spin} from "antd";
-import {useAccount} from "wagmi";
+import {useAccount, useBalance} from "wagmi";
 import {truncateText} from "@/utils/utils";
-import {disconnect} from "@wagmi/core";
-import {config} from "@/config/wagmi.config";
 import "./wallet.css"
+import {
+  connect,
+  disconnect,
+  getBalance, getTransactionConfirmations, getTransactionReceipt,
+  injected,
+  sendTransaction, waitForTransactionReceipt, watchPendingTransactions,
+  writeContract,
+  type WriteContractErrorType
+} from "@wagmi/core";
+import {config} from "@/config/wagmi.config";
+import {parseEther} from "ethers";
+
+type account = {
+  account: any,
+  address: string,
+  chainId: number,
+  balance: string
+}
 
 const Wallet = () => {
 
-  let { account,isConnected, connectWallet, disconnectWallet, sendEth, getBalance } = useWallet()
+  const [account, setAccount] = useState<account>()
   const [address, setAddress] = useState<string>("")
   const [amount, setAmount] = useState<number>(0)
   const [loading, setLoading] = useState<boolean>(false)
   const [open, setOpen] = useState<boolean>(false)
+  // const [loginAddress, setLoginAddress] = useState<string>("");
 
+  const connectWallet = async () => {
+
+    const accountsInfo = await connect(config, {connector: injected()});
+    const balance = await getBalance(config, {
+      address: accountsInfo.accounts[0],
+    })
+    setAccount({
+      account: accountsInfo,
+      address: accountsInfo.accounts[0],
+      chainId: accountsInfo.chainId,
+      balance: balance.formatted
+    })
+    console.log(balance);
+  }
 
   const disconnect = () => {
     if (account) {
@@ -26,19 +56,35 @@ const Wallet = () => {
 
   const send = async () => {
     setLoading(true)
-    const result = await sendEth(address, amount)
-    console.log(result);
-    if (result) {
-      // messageApi.success("Transfer success")
-    } else {
-      // messageApi.error("Transfer failed")
+    try {
+      const result = await sendTransaction(config, {
+        // @ts-ignore
+        to: address,
+        value: parseEther(String(amount))
+      });
+
+      const transactionReceipt = await waitForTransactionReceipt(config, {
+        hash: result,
+      })
+
+      const balance = await getBalance(config, {
+        // @ts-ignore
+        address: account?.address,
+      })
+      setAccount({...account, balance: balance.formatted})
+    } catch (e) {
+      alert("Transfer failed")
     }
-    await getBalance(account)
     setLoading(false)
+    alert("success")
   }
 
   const confirm = async (e: React.MouseEvent<HTMLElement>) => {
-    disconnectWallet()
+    // @ts-ignore
+    setAccount(null)
+    setAddress('')
+    setAmount(0)
+    setLoading(false)
     setOpen(false)
   };
 
@@ -46,9 +92,16 @@ const Wallet = () => {
     setOpen(false)
   };
 
+  const handleConnectWallet = (loginAddress:string) => {
+    setAddress(loginAddress)
+  };
+
+  const handleDisConnectWallet = () => {
+    setAddress("")
+  };
+
   return (
     <>
-      {/*{contextHolder}*/}
       <div className={"flex justify-center items-center h-full w-full"}>
 
         {account
@@ -86,7 +139,7 @@ const Wallet = () => {
                 <div className={"h-30 bg-gray-700 text-white mt-5 rounded"}>
                   <div className={"flex justify-between"}>
                     <p className={"text-2xl text-center pt-2 pl-4"}>Balance</p>
-                    <p className={"pr-4 pt-2"}>Network: {account.network}</p>
+                    <p className={"pr-4 pt-2"}>ChainID: {account.chainId}</p>
                   </div>
                   <div className={"mt-10 pb-2"}>
                     <span className={"text-xl pl-4"}>{account.balance}</span>

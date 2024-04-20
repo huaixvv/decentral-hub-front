@@ -2,6 +2,10 @@
 
 import {AbstractProvider, BrowserProvider, ethers, formatEther, parseEther} from "ethers";
 import {useEffect, useState} from "react";
+import {connect, disconnect, injected, writeContract, type WriteContractErrorType} from "@wagmi/core";
+import {config} from "@/config/wagmi.config";
+import {useBalance} from "wagmi";
+
 
 type account = {
   account: any,
@@ -41,23 +45,39 @@ const useWallet = () => {
     }
 
     try {
+
+      const accountsInfo = await connect(config, {connector: injected()});
+      const balance = useBalance({
+        address: accountsInfo.accounts[0],
+      })
+
+      console.log(balance);
+
+      // setAccount({
+      //   account: accountsInfo.accounts[0],
+      //   address: accountsInfo.accounts[0],
+      //   network: !network ? "unknown" : network,
+      //   balance: formatEther(balance).substring(0, 5),
+      // })
+
+
       // @ts-ignore
-      const accounts = await provider.listAccounts();
-      if (accounts.length > 0) {
-        // @ts-ignore
-        let network = await provider.getNetwork().name;
-        console.log(network);
-        // @ts-ignore
-        let balance = await provider.getBalance(accounts[0]);
-        console.log(network, balance);
-        setAccount({
-          account: accounts[0],
-          address: accounts[0].address,
-          network: !network ? "unknown" : network,
-          balance: formatEther(balance).substring(0, 5),
-        })
-        setIsConnected(true); // 设置连接状态为已连接
-      }
+      // const accounts = await provider.listAccounts();
+      // if (accounts.length > 0) {
+      //   // @ts-ignore
+      //   let network = await provider.getNetwork().name;
+      //   console.log(network);
+      //   // @ts-ignore
+      //   let balance = await provider.getBalance(accounts[0]);
+      //   console.log(network, balance);
+      //   setAccount({
+      //     account: accounts[0],
+      //     address: accounts[0].address,
+      //     network: !network ? "unknown" : network,
+      //     balance: formatEther(balance).substring(0, 5),
+      //   })
+      //   setIsConnected(true); // 设置连接状态为已连接
+      // }
     } catch (error) {
       console.error("Failed to connect wallet:", error);
     }
