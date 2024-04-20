@@ -66,18 +66,19 @@ const Wallet = () => {
       const transactionReceipt = await waitForTransactionReceipt(config, {
         hash: result,
       })
-
+      console.log('transactionReceipt', transactionReceipt);
       const balance = await getBalance(config, {
         // @ts-ignore
         address: account?.address,
       })
       // @ts-ignore
       setAccount({...account, balance: balance.formatted})
+      alert("success")
     } catch (e) {
       alert("Transfer failed")
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
-    alert("success")
   }
 
   const confirm = async (e: React.MouseEvent<HTMLElement>) => {
