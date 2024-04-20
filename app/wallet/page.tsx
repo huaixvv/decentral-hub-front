@@ -71,6 +71,7 @@ const Wallet = () => {
         // @ts-ignore
         address: account?.address,
       })
+      // @ts-ignore
       setAccount({...account, balance: balance.formatted})
     } catch (e) {
       alert("Transfer failed")
